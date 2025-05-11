@@ -6,11 +6,13 @@ const Blog = require("./models/Blog");
 
 const app = express();
 
+require("dotenv").config();
+
 // Connect to mongoDB Atlas
 // midoria - username
 // midoria1234 - password
-const dbURI =
-  "mongodb+srv://midoria:midoria1234@cluster0.6sxuwa3.mongodb.net/node-raman?retryWrites=true&w=majority&appName=Cluster0";
+
+const dbURI = process.env.MONGO_URI;
 
 // Connecting to the mongoDB Atlas using 'mongoose'
 mongoose
@@ -19,7 +21,7 @@ mongoose
     console.log("Connected to DB");
     console.log("listening to port http://localhost:3000");
 
-    app.listen(3000);
+    app.listen(process.env.PORT || 3000);
   })
   .catch((err) => console.log(err));
 

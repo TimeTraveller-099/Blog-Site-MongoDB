@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('./partials/head.ejs') %>
+  <body>
+    <%- include('./partials/nav.ejs') %>
+
+    <div class="details">
+      <h2><%= blog.title %></h2>
+      <div>
+        <p><%= blog.snippet %></p>
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button class="back" id="back">Back</button>
+      <button class="delete" id="delete" data-id="<%= blog._id %>">
+        Delete
+      </button>
+    </div>
+
+    <script>
+      // Delete Button
+      const delBtn = document.getElementById("delete");
+      delBtn.addEventListener("click", () => {
+        const id = delBtn.dataset.id;
+        fetch(`/blogs/${id}`, {
+          method: "DELETE",
+        })
+          .then((response) => response.json())
+          .then((data) => (window.location.href = data.redirect))
+          .catch((err) => console.log(err));
+      });
+
+      // Back Button
+      const backBtn = document.getElementById("back");
+      backBtn.addEventListener("click", () => {
+        window.location.href = "/blogs";
+      });
+    </script>
+  </body>
+</html>

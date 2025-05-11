@@ -5,9 +5,10 @@
     <%- include('./partials/nav.ejs') %>
 
     <div class="create-blog content">
-      <form>
+      <form action="/blogs" method="POST">
         <label for="title">Blog title:</label>
         <input
+          name="title"
           type="text"
           autocomplete="off"
           id="title"
@@ -15,20 +16,12 @@
           required
         />
 
-        <label for="snippet">Blog snippet:</label>
-        <input
-          type="text"
-          autocomplete="off"
-          id="snippet"
-          placeholder="Blog Snippet"
-          required
-        />
-
-        <label for="body">Blog body:</label>
+        <label for="body">Blog Snippet:</label>
         <textarea
+          name="snippet"
           id="body"
           autocomplete="off"
-          placeholder="Blog Body"
+          placeholder="Blog Snippet"
           required
         ></textarea>
 

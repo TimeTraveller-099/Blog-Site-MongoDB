@@ -28,79 +28,68 @@ app.set("view engine", "ejs");
 
 // Make the 'public' folder public.
 app.use(express.static("public"));
+
 // Using 'morgan' to log request details.
 app.use(morgan("dev"));
 
-// Sandbox Routes
-app.get("/add-blog", (req, res) => {
-  // const blog = new Blog({
-  //   title: "One Piece: The Timeless Tale of Pirates, Dreams, and the Sea",
-  //   snippet:
-  //     "Dive into the epic world of One Piece, where a rubber-bodied boy with an unbreakable spirit sails across oceans chasing the ultimate treasure. It’s not just an anime—it’s a journey through legacy, friendship, and freedom.",
-  // });
-  const blog = new Blog({
-    title:
-      "Demon Slayer: Beauty, Bloodshed, and the Bonds That Burn Brighter Than Fire",
-    snippet:
-      "A tale of blades, demons, and unwavering resolve—Demon Slayer is a stunning anime that blends jaw-dropping animation with heart-wrenching emotion. Follow Tanjiro as he fights to save what’s left of his family and his humanity.",
-  });
+// This is a middleware function that parses incoming requests with URL-encoded payloads, which is the default format for form submissions.
+app.use(express.urlencoded({ extended: true }));
 
-  blog
-    .save()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch((err) => console.log(err));
-});
-
-app.get("/all-blogs", (req, res) => {
-  Blog.find()
-    .then((result) => res.send(result))
-    .catch((err) => console.log(err));
-});
-
-app.get("/single-blog", (req, res) => {
-  Blog.findById("682043f4617f258fce12d8d5")
-    .then((result) => res.send(result))
-    .catch((err) => console.log(err));
-});
-
-// -------------------------------------------
-// -------------------------------------------
-// -------------------------------------------
-// -------------------------------------------
-
+/* ---------- Route Handlers ---------- */
 app.get("/", (req, res) => {
-  const blogs = [
-    { title: "All Might", snippet: "Inherited 'One For All'." },
-    {
-      title: "Eraser Head",
-      snippet: "Can erase Quirks of anyone he can see physically.",
-    },
-    {
-      title: "Izuku Midoria",
-      snippet:
-        "Inherited 'One For All' from All Might. Also the biggest 'All Might' fan.",
-    },
-    {
-      title: "Naruto",
-      snippet: "The Hokage of the Konoha Village.",
-    },
-    {
-      title: "Itachi Uchiha",
-      snippet: "Annhilated his entire clan for the future of his village.",
-    },
-  ];
-
-  res.render("index", { title: "Home", blogs });
+  res.redirect("/blogs");
 });
 
 app.get("/about", (req, res) => {
   res.render("about", { title: "About" });
 });
 
+/* ------ Blog Routes ------ */
+// Post a Blog
+app.post("/blogs", (req, res) => {
+  const blog = new Blog(req.body);
+  blog.save().then((result) => {
+    res.redirect("/");
+  });
+});
+
+// Render all the Blogs
+app.get("/blogs", (req, res) => {
+  Blog.find()
+    .sort({ createdAt: -1 }) // Newest at the Top
+    .then((result) =>
+      res.render("index", { title: "All Blogs", blogs: result })
+    )
+    .catch((err) => console.log(err));
+});
+
+// Create a blog
 app.get("/blogs/create", (req, res) => {
-  res.render("createBlog", { title: "Create a new blog" });
+  try {
+    res.render("createBlog", { title: "Create a new blog" });
+  } catch (err) {
+    console.log("Render error:", err);
+    res.send("Something went wrong.");
+  }
+});
+
+// Single Blog Page
+app.get("/blogs/:id", (req, res) => {
+  const id = req.params.id;
+  Blog.findById(id)
+    .then((result) => {
+      res.render("blogDetails", { blog: result, title: "Blog Details" });
+    })
+    .catch((err) => console.log(err));
+});
+
+// Deleting a Blog
+app.delete("/blogs/:id", (req, res) => {
+  Blog.findByIdAndDelete(req.params.id)
+    .then(() => {
+      res.json({ redirect: "/blogs" });
+    }) // We cannot redirect here
+    .catch((err) => console.log(err));
 });
 
 // If none of the routes match

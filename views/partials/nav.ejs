@@ -5,8 +5,22 @@
   </div>
 
   <ul>
-    <li class="x"><a href="/">Blogs</a></li>
-    <li class="x"><a href="/about">About</a></li>
-    <li><a href="/blogs/create">Create a Blog</a></li>
+    <li class="x">
+      <a href="/" class="<%= currentPage == 'blogs' ? 'active' : '' %>"
+        >Blogs</a
+      >
+    </li>
+    <li class="x">
+      <a href="/about" class="<%= currentPage == 'about' ? 'active' : '' %>"
+        >About</a
+      >
+    </li>
+    <li>
+      <a
+        href="/blogs/create"
+        class="<%= currentPage == 'create' ? 'active' : '' %>"
+        >Create a Blog</a
+      >
+    </li>
   </ul>
 </nav>

@@ -9,9 +9,6 @@ const app = express();
 require("dotenv").config();
 
 // Connect to mongoDB Atlas
-// midoria - username
-// midoria1234 - password
-
 const dbURI = process.env.MONGO_URI;
 
 // Connecting to the mongoDB Atlas using 'mongoose'
@@ -43,7 +40,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/about", (req, res) => {
-  res.render("about", { title: "About" });
+  res.render("about", { title: "About", currentPage: "about" });
 });
 
 /* ------ Blog Routes ------ */
@@ -60,7 +57,11 @@ app.get("/blogs", (req, res) => {
   Blog.find()
     .sort({ createdAt: -1 }) // Newest at the Top
     .then((result) =>
-      res.render("index", { title: "All Blogs", blogs: result })
+      res.render("index", {
+        title: "All Blogs",
+        blogs: result,
+        currentPage: "blogs",
+      })
     )
     .catch((err) => console.log(err));
 });
@@ -68,7 +69,10 @@ app.get("/blogs", (req, res) => {
 // Create a blog
 app.get("/blogs/create", (req, res) => {
   try {
-    res.render("createBlog", { title: "Create a new blog" });
+    res.render("createBlog", {
+      title: "Create a new blog",
+      currentPage: "create",
+    });
   } catch (err) {
     console.log("Render error:", err);
     res.send("Something went wrong.");
@@ -80,7 +84,11 @@ app.get("/blogs/:id", (req, res) => {
   const id = req.params.id;
   Blog.findById(id)
     .then((result) => {
-      res.render("blogDetails", { blog: result, title: "Blog Details" });
+      res.render("blogDetails", {
+        blog: result,
+        title: "Blog Details",
+        currentPage: "blogs",
+      });
     })
     .catch((err) => res.render("404", { title: "Blog not Found" }));
 });

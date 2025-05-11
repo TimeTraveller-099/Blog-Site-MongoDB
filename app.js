@@ -80,7 +80,7 @@ app.get("/blogs/:id", (req, res) => {
     .then((result) => {
       res.render("blogDetails", { blog: result, title: "Blog Details" });
     })
-    .catch((err) => console.log(err));
+    .catch((err) => res.render("404", { title: "Blog not Found" }));
 });
 
 // Deleting a Blog

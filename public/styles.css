@@ -223,8 +223,8 @@ nav ul li a {
 
 .details p {
   font-size: 1.4rem;
-  align-self: stretch;
   color: #b3b3b3;
+  white-space: pre-wrap;
 }
 
 .buttons {
